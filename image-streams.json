@@ -2,7 +2,7 @@
     "kind": "ImageStream",
     "apiVersion": "v1",
     "metadata": {
-        "name": "s2i-minimal-notebook",
+        "name": "s2i-datascience-notebook",
         "annotations": {
             "openshift.io/display-name": "Jupyter Notebook"
         }
@@ -12,7 +12,7 @@
             {
                 "name": "latest",
                 "annotations": {
-                    "openshift.io/display-name": "Jupyter Notebook (latest)",
+                    "openshift.io/display-name": "Jupyter Datascience Notebook (0c68990e9304)",
                     "description": "Build and deploy a custom Jupyter Notebook image with pre-bundled notebooks, data files and Python packages.",
                     "iconClass": "icon-python",
                     "sampleRepo": "https://github.com/getwarped/sample-notebooks.git",
