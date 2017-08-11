@@ -26,7 +26,8 @@ COPY s2i /opt/app-root/s2i
 
 # Adjust permissions on home directory so writable by group root.
 
-RUN chgrp -Rf root /home/$NB_USER /opt/conda && chmod -Rf g+w /home/$NB_USER /opt/conda
+RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
+
 
 # Adjust permissions on /etc/passwd so writable by group root.
 
@@ -37,6 +38,9 @@ RUN chmod g+w /etc/passwd
 # really maps to user ID for root.
 
 USER 1000
+
+ARG CONDA_REQUIREMENTS=""
+RUN /opt/app-root/s2i/bin/install_requirements
 
 # Override command to startup Jupyter notebook. The original is wrapped
 # so we can set an environment variable for notebook password.
