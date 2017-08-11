@@ -37,9 +37,10 @@ if [ x"${PERSISTENT_VOLUME_ROOTDIR}" != x"" ]; then
 
     JUPYTER_NOTEBOOK_DIR=${WORKDIR}
 
-    if [ -f $WORKDIR/requirements.txt ]; then
-     (cd $WORKDIR && conda install -y --file requirements.txt)
-    fi
+fi
+
+if [ -f $WORKDIR/requirements.txt ]; then
+ (cd $WORKDIR && conda install -y --file requirements.txt)
 fi
 
 NOTEBOOK_ARGS="$NOTEBOOK_ARGS --notebook-dir=${JUPYTER_NOTEBOOK_DIR}"
