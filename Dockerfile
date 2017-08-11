@@ -15,11 +15,9 @@ RUN apt-get update && \
 
 # Add labels so OpenShift recognises this as an S2I builder image.
 
-LABEL io.k8s.description="S2I builder for Jupyter (datascience-notebook)." \
+LABEL io.k8s.description="Jupyter (datascience-notebook)." \
       io.k8s.display-name="Jupyter (datascience-notebook)" \
-      io.openshift.expose-services="8888:http" \
-      io.openshift.tags="builder,python,jupyter" \
-      io.openshift.s2i.scripts-url="image:///opt/app-root/s2i/bin"
+      io.openshift.expose-services="8888:http"
 
 # Copy in S2I builder scripts for installing Python packages and copying
 # in of notebooks and data files.
@@ -28,7 +26,7 @@ COPY s2i /opt/app-root/s2i
 
 # Adjust permissions on home directory so writable by group root.
 
-RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
+RUN chgrp -Rf root /home/$NB_USER /opt/conda && chmod -Rf g+w /home/$NB_USER /opt/conda
 
 # Adjust permissions on /etc/passwd so writable by group root.
 
