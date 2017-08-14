@@ -22,7 +22,7 @@ LABEL io.k8s.description="Jupyter (datascience-notebook)." \
 # Copy in S2I builder scripts for installing Python packages and copying
 # in of notebooks and data files.
 
-COPY bin /opt/app-root
+COPY bin /opt/app-root/bin
 
 # Adjust permissions on home directory so writable by group root.
 
