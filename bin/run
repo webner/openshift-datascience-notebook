@@ -25,20 +25,6 @@ fi
 
 JUPYTER_NOTEBOOK_DIR=${JUPYTER_NOTEBOOK_DIR:-/home/$NB_USER/work}
 
-if [ x"${PERSISTENT_VOLUME_ROOTDIR}" != x"" ]; then
-    PERSISTENT_VOLUME_WORKSPACE=${PERSISTENT_VOLUME_WORKSPACE:-work}
-
-    WORKDIR=${PERSISTENT_VOLUME_ROOTDIR}/${PERSISTENT_VOLUME_WORKSPACE}
-
-    if [ ! -d ${WORKDIR} ]; then
-        mkdir -p ${WORKDIR}
-        cp -rp ${JUPYTER_NOTEBOOK_DIR}/. ${WORKDIR}
-    fi
-
-    JUPYTER_NOTEBOOK_DIR=${WORKDIR}
-
-fi
-
 if [ -f $WORKDIR/requirements.txt ]; then
  (cd $WORKDIR && conda install -y --file requirements.txt)
 fi

@@ -22,7 +22,7 @@ LABEL io.k8s.description="Jupyter (datascience-notebook)." \
 # Copy in S2I builder scripts for installing Python packages and copying
 # in of notebooks and data files.
 
-COPY s2i /opt/app-root/s2i
+COPY bin /opt/app-root
 
 # Adjust permissions on home directory so writable by group root.
 
@@ -40,9 +40,9 @@ RUN chmod g+w /etc/passwd
 USER 1000
 
 ARG CONDA_REQUIREMENTS=""
-RUN /opt/app-root/s2i/bin/install_requirements
+RUN /opt/app-root/bin/install_requirements
 
 # Override command to startup Jupyter notebook. The original is wrapped
 # so we can set an environment variable for notebook password.
 
-CMD [ "/opt/app-root/s2i/bin/run" ]
+CMD [ "/opt/app-root/bin/run" ]
