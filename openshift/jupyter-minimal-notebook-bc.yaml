@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: minimal-notebook
+  name: minimal-notebook
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: minimal-notebook:latest
+      namespace: openshift
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: https://github.com/webner/openshift-datascience-notebook.git
+    type: Git
+  strategy:
+    dockerStrategy:
+      env:
+      - name: CONDA_REQUIREMENTS
+        value: 
+      from:
+        kind: ImageStreamTag
+        name: jupyter-minimal-notebook:latest
+    type: Docker
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
+status:
+  lastVersion: 0

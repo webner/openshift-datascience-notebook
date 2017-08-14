@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: jupyter-minimal-notebook
+  namespace: openshift
+  annotations:
+    openshift.io/display-name: "Jupyter Minimal Notebook (Persistent)" 
+    description: >-
+      An Jupyter Minimal Notebook with persistence.
+    tags: "python,jupyter" 
+    iconClass: icon-python 
+message: |-
+  The following service has been created in your project: ${SERVICE_NAME}.
+
+         Password: ${JUPYTER_PASSWORD}
+objects:
+- apiVersion: v1
+  stringData:
+    JUPYTER_NOTEBOOK_PASSWORD: ${JUPYTER_PASSWORD}
+  kind: Secret
+  metadata:
+    name: ${SERVICE_NAME}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${SERVICE_NAME}
+      name: ${SERVICE_NAME}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: ${SERVICE_NAME}
+          name: ${SERVICE_NAME}
+      spec:
+        containers:
+        - env:
+          - name: JUPYTER_NOTEBOOK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: JUPYTER_NOTEBOOK_PASSWORD
+                name: ${SERVICE_NAME}
+          image: ''
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8888
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+          name: notebook
+          ports:
+          - containerPort: 8888
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8888
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            limits:
+              cpu: "2"
+              memory: ${MEMORY_LIMIT}
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /home/jovyan/work
+            name: jupyter-pv
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: jupyter-pv
+          persistentVolumeClaim:
+            claimName: ${SERVICE_NAME}
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - notebook
+        from:
+          kind: ImageStreamTag
+          name: minimal-notebook:latest
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${SERVICE_NAME}
+  spec:
+    port:
+      targetPort: 8888-tcp
+    to:
+      kind: Service
+      name: ${SERVICE_NAME}
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    ports:
+    - name: 8888-tcp
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+    selector:
+      name: ${SERVICE_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      volume.beta.kubernetes.io/storage-class: dynamic
+      volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/rbd
+    name: ${SERVICE_NAME}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY}
+parameters:
+- description: Maximum amount of memory the container can use.
+  displayName: Memory Limit
+  name: MEMORY_LIMIT
+  required: true
+  value: 2048Mi
+- description: The name of the OpenShift Service exposed.
+  displayName: Service Name
+  name: SERVICE_NAME
+  required: true
+  value: jupyter-notebook
+- description: Password for Jupyter.
+  displayName: Jupyter Password
+  from: '[a-zA-Z0-9]{16}'
+  generate: expression
+  name: JUPYTER_PASSWORD
+  required: true
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY
+  required: true
+  value: 20Gi
