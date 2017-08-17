@@ -25,8 +25,8 @@ fi
 
 JUPYTER_NOTEBOOK_DIR=${JUPYTER_NOTEBOOK_DIR:-/home/$NB_USER/work}
 
-if [ -f $WORKDIR/requirements.txt ]; then
- (cd $WORKDIR && conda install -y --file requirements.txt)
+if [ -f $JUPYTER_NOTEBOOK_DIR/requirements.txt ]; then
+ (cd $JUPYTER_NOTEBOOK_DIR && conda install -y --file requirements.txt)
 fi
 
 NOTEBOOK_ARGS="$NOTEBOOK_ARGS --notebook-dir=${JUPYTER_NOTEBOOK_DIR}"
