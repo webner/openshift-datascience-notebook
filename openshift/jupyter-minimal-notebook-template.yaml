@@ -49,6 +49,7 @@ objects:
           image: ''
           imagePullPolicy: Always
           livenessProbe:
+            initialDelaySeconds: 300
             failureThreshold: 3
             httpGet:
               path: /
