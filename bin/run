@@ -25,6 +25,10 @@ fi
 
 JUPYTER_NOTEBOOK_DIR=${JUPYTER_NOTEBOOK_DIR:-/home/$NB_USER/work}
 
+if [ -f $JUPYTER_NOTEBOOK_DIR/pip-requirements.txt ]; then
+ (cd $JUPYTER_NOTEBOOK_DIR && pip install -r pip-requirements.txt)
+fi
+
 if [ -f $JUPYTER_NOTEBOOK_DIR/requirements.txt ]; then
  (cd $JUPYTER_NOTEBOOK_DIR && conda install -y --file requirements.txt)
 fi

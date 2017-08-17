@@ -39,6 +39,7 @@ RUN chmod g+w /etc/passwd
 
 USER 1000
 
+ARG PIP_REQUIREMENTS=""
 ARG CONDA_REQUIREMENTS=""
 RUN /opt/app-root/bin/install_requirements
 
