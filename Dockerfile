@@ -26,7 +26,7 @@ COPY bin /opt/app-root/bin
 
 # Adjust permissions on home directory so writable by group root.
 
-RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
+RUN chgrp -Rf root /home/$NB_USER /opt/conda && chmod -Rf g+w /home/$NB_USER /opt/conda
 
 
 # Adjust permissions on /etc/passwd so writable by group root.
