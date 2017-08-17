@@ -3,7 +3,7 @@
 set -eo pipefail
 
 if [ -n "$PIP_REQUIREMENTS" ]; then
-    (cd /home/$NB_USER/work && pip install -y $PIP_REQUIREMENTS)
+    (cd /home/$NB_USER/work && pip install $PIP_REQUIREMENTS)
 fi
 if [ -n "$CONDA_REQUIREMENTS" ]; then
     (cd /home/$NB_USER/work && conda install -y $CONDA_REQUIREMENTS && conda clean -tipsy)
